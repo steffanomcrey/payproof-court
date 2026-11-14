@@ -1,0 +1,10 @@
+{
+ "network": "studionet",
+ "chain_id": 61999,
+ "rpc": "https://studio.genlayer.com/api",
+ "deployer": "0x00000C2BE4EdF75D0f292153cC27230891DC67A5",
+ "contract_address": "0xE1d7Dc019cb225bEc33ff05da2eba105d8AACF6C",
+ "deploy_tx_hash": "0x7f7de9d0511c4896cf33007c7c8c692b9d275b8847fe4693f63ca211a55d7cff",
+ "explorer_url": "https://genlayer-explorer.vercel.app/contract/0xE1d7Dc019cb225bEc33ff05da2eba105d8AACF6C",
+ "deploy_tx_explorer_url": "https://genlayer-explorer.vercel.app/tx/0x7f7de9d0511c4896cf33007c7c8c692b9d275b8847fe4693f63ca211a55d7cff"
+}
