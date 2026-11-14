@@ -1,0 +1,74 @@
+PayProof Court demo run transcript
+Date: 2026-11-14 (Asia/Jakarta)
+Network: GenLayer testnet-bradbury (chain 4221, RPC https://rpc-bradbury.genlayer.com)
+Deployer / filer identity: farming EVM 0x00000C2BE4EdF75D0f292153cC27230891DC67A5 (only)
+
+1. Partner evidence check (ZKsync, live)
+   GET https://zksync.blockscout.com/api/v2/transactions/0x3d9503c9e742ad58735e317d7ed8a216e8662a5b836466c778cfb58709f30e03
+   Result: status ok, result success, raw_input 0x (plain ETH transfer),
+   from 0x26FFf75146d99Ed139a6d5de7391c495Ec2202ef,
+   to 0x485D09CD9EA4C73c25EA8a7CE59EAa95fB672289,
+   value 600000000000000 wei, timestamp 2026-11-14T11:55:04.000000Z,
+   block 72920312.
+
+2. Delivery evidence page (live)
+   Published demo/delivery-note.html with Muse built-in storage.
+   URL: https://muse.ai/files/1371527172715263/1125707830316518/wzhqx9r01z38xxuwtzoglafm/delivery-note.html
+   Content: placeholder delivery note, brief NOT attached, nothing delivered.
+   Note: this storage URL expires 2026-11-16T12:03:27Z; re-upload
+   demo/delivery-note.html and update demo/case-data.json before a later
+   on-chain run.
+
+3. Contract lint
+   genvm-lint check contracts/payproof_court.py
+   Output: Lint passed (3 checks). Validation passed.
+   Contract: PayProofCourt. Methods: 4 (3 view, 1 write).
+
+4. Faucet funding attempts (all agent-side)
+   a. Boterdrop Turnstile solver (local, port 8001), sitekey
+      0x4AAAAAAChGw_Gp3Hn5scum: two tasks accepted, both finished with
+      status error, value captcha_fail (66 s and about 60 s).
+   b. Local Playwright Chromium under Xvfb, through a local CONNECT relay
+      into the authenticated egress proxy (the SOCKS proxy on
+      127.0.0.1:1080 died during the session): the faucet page loads, but
+      it renders no claim form without a sign-in; page text includes
+      "Requires 0.01 ETH on mainnet".
+   c. Direct API probe: POST /api/claim with the farming address and a
+      probe token returned HTTP 401:
+      {"success":false,"error":"You must sign in with GitHub to claim GEN."}
+   d. Gate check on mainnet: farming wallet eth_getBalance on Ethereum
+      mainnet is 35301883305232 wei (0.0000353 ETH), below the faucet
+      requirement of 0.01 ETH. /api/stats rejection counters confirm the
+      eth_balance and gh_auth rejection classes exist.
+   e. Alternate faucet genlayer-testnet.hub.caldera.xyz redirects to
+      caldera.xyz (dead for GenLayer).
+   Conclusion: faucet claim is blocked by the GitHub OAuth gate and,
+   independently, by the 0.01 ETH mainnet gate for this wallet.
+
+5. Deploy attempt (genlayer-js, repo scripts)
+   $ node scripts/deploy.js
+   Deployer (farming EVM): 0x00000C2BE4EdF75D0f292153cC27230891DC67A5
+   Bradbury balance (wei): 0
+   ERROR: deployer balance is 0 GEN on Bradbury. Fund it from
+   https://testnet-faucet.genlayer.foundation/ first.
+   The pipeline (vault key loading in-process, genlayer-js client, live
+   RPC) works; deployment is impossible with a 0 GEN balance.
+
+6. Local logic run (fallback, no simulator or Docker available locally)
+   The unmodified contract source ran on a minimal genlayer stub with
+   REAL web fetches and the contract's own validator functions; only the
+   LLM juror was a deterministic stand-in.
+   Scenario 1 (demo case): verdict REFUND_BUYER, reason JURY_VERDICT,
+   payment facts stored exactly (from, to, value 600000000000000,
+   status ok, timestamp 2026-11-14T11:55:04.000000Z).
+   Scenario 2 (wrong expected amount): REFUND_BUYER, PAYMENT_MISMATCH.
+   Scenario 3 (nonexistent payment tx): REFUND_BUYER, PAYMENT_MISMATCH,
+   payment_status not_found.
+   Full output: demo/local-simulation-transcript.txt.
+
+7. On-chain demo run
+   NOT EXECUTED, blocked at step 4/5 (0 GEN, faucet gates above).
+   GenLayer case tx hash: none. On-chain verdict read back: none.
+   To finish once funded:
+     node scripts/deploy.js
+     python3 run_case.py --case-data demo/case-data.json --out demo/result.json

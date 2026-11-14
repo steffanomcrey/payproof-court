@@ -1,0 +1,26 @@
+PayProof Court, live run on GenLayer StudioNet (chain 61999)
+Date: 2026-11-14
+
+Deploy: node scripts/deploy_studionet.js
+  Deployer (farming EVM): 0x00000C2BE4EdF75D0f292153cC27230891DC67A5
+  StudioNet balance (wei): 10000000000000000000
+  Deploy tx hash: 0x7f7de9d0511c4896cf33007c7c8c692b9d275b8847fe4693f63ca211a55d7cff
+  Contract address: 0xE1d7Dc019cb225bEc33ff05da2eba105d8AACF6C
+
+Case: node scripts/run_case_studionet.js demo/case-data.json 0xE1d7Dc019cb225bEc33ff05da2eba105d8AACF6C
+  Case tx hash: 0xdff1cdc3243af2adf48952b53a8df4de9f6ef6f49b55b2346227952d62a76b4c
+  Receipt status: FINALIZED (7)
+  Stored case case-1 (read back with get_case):
+    payment_from: 0x26fff75146d99ed139a6d5de7391c495ec2202ef
+    payment_to: 0x485d09cd9ea4c73c25ea8a7ce59eaa95fb672289
+    payment_value: 600000000000000
+    payment_status: ok
+    payment_timestamp: 2026-11-14T11:55:04.000000Z
+    verdict: REFUND_BUYER
+    reason_code: JURY_VERDICT
+    reasoning: The delivery evidence page explicitly states 'Status: UNDER
+    CONSTRUCTION' and that 'The market brief document is not attached to
+    this page yet' and 'Nothing has been delivered at this time.' Per the
+    deal terms, a placeholder or 'under construction' page counts as
+    non-delivery.
+  Full JSON read-back: demo/result-studionet.json
